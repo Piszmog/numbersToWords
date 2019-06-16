@@ -13,22 +13,6 @@ func TestNumber_String(t *testing.T) {
 	if word != "Zero" {
 		t.Fatalf("expected the word 'Zero' but was converted to '%s'", word)
 	}
-	word = number(1).String()
-	if word != "One" {
-		t.Fatalf("expected the word 'One' but was converted to '%s'", word)
-	}
-	word = number(10).String()
-	if word != "Ten" {
-		t.Fatalf("expected the word 'Ten' but was converted to '%s'", word)
-	}
-	word = number(15).String()
-	if word != "Fifteen" {
-		t.Fatalf("expected the word 'Ten' but was converted to '%s'", word)
-	}
-	word = number(35).String()
-	if word != "Thirty-five" {
-		t.Fatalf("expected the word 'Thirty-five' but was converted to '%s'", word)
-	}
 	word = number(99).String()
 	if word != "Ninety-nine" {
 		t.Fatalf("expected the word 'Ninety-nine' but was converted to '%s'", word)
@@ -36,10 +20,6 @@ func TestNumber_String(t *testing.T) {
 	word = number(100).String()
 	if word != "One hundred" {
 		t.Fatalf("expected the word 'One hundred' but was converted to '%s'", word)
-	}
-	word = number(102).String()
-	if word != "One hundred two" {
-		t.Fatalf("expected the word 'One hundred two' but was converted to '%s'", word)
 	}
 	word = number(155).String()
 	if word != "One hundred fifty-five" {
@@ -49,29 +29,13 @@ func TestNumber_String(t *testing.T) {
 	if word != "Nine hundred ninety-nine" {
 		t.Fatalf("expected the word 'Nine hundred ninety-nine' but was converted to '%s'", word)
 	}
-	word = number(1000).String()
-	if word != "One thousand" {
-		t.Fatalf("expected the word 'One thousand' but was converted to '%s'", word)
-	}
 	word = number(1012).String()
 	if word != "One thousand twelve" {
 		t.Fatalf("expected the word 'One thousand twelve' but was converted to '%s'", word)
 	}
-	word = number(1708).String()
-	if word != "One thousand seven hundred eight" {
-		t.Fatalf("expected the word 'One thousand seven hundred eight' but was converted to '%s'", word)
-	}
-	word = number(8708).String()
-	if word != "Eight thousand seven hundred eight" {
-		t.Fatalf("expected the word 'Eight thousand seven hundred eight' but was converted to '%s'", word)
-	}
 	word = number(30708).String()
 	if word != "Thirty thousand seven hundred eight" {
 		t.Fatalf("expected the word 'Thirty thousand seven hundred eight' but was converted to '%s'", word)
-	}
-	word = number(55708).String()
-	if word != "Fifty-five thousand seven hundred eight" {
-		t.Fatalf("expected the word 'Fifty-five thousand seven hundred eight' but was converted to '%s'", word)
 	}
 	word = number(100001).String()
 	if word != "One hundred thousand one" {
