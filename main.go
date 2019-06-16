@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	//
 	// Setup flags to read file
 	//
-	fileLocation := flag.String("f", "", "File containing the numbers to convert to words")
+	fileLocation := flag.String("f", "", "File (.txt) containing the numbers to convert to words")
 	flag.Parse()
 	//
 	// Validate input flag
@@ -25,6 +26,9 @@ func main() {
 		fmt.Println("Missing required flag '-f'")
 		flag.Usage()
 		return
+	}
+	if !strings.HasSuffix(*fileLocation, ".txt") {
+		log.Fatalln("Expected input type for file is: .txt")
 	}
 	//
 	// Open the file
