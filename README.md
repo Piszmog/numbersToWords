@@ -8,7 +8,7 @@
 Application for converting numbers into their word equivalent - i.e  `1` -> `One`
 
 ## Running
-Download the appropriate executable for the Operating System that it will be ran on (Linux, Mac, Windows). Then simply run 
+Download the appropriate executable from the [Releases Page](https://github.com/Piszmog/numbersToWords/releases) for the Operating System that it will be ran on (Linux, Mac, Windows). Then simply run 
 the executable with the `-f` flag to specify the input file to read.
 
 ```bash
