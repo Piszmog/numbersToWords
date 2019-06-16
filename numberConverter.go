@@ -1,10 +1,14 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 const (
-	space = " "
-	dash  = "-"
+	space    = " "
+	dash     = "-"
+	negative = "negative"
+	zero     = "Zero"
 )
 
 var singleAndTeenWords = []string{
@@ -57,27 +61,79 @@ type number int64
 // implements fmt.Stringer. This means a special function does not need to be called to print the word.
 func (num number) String() string {
 	//
-	// using strings.Builder will help save on object creation and performance
+	// handle special case of 'zero'
+	//
+	if num == 0 {
+		return zero
+	}
+	//
+	// to save on object creation and performance, use strings.Builder
 	//
 	wordBuilder := strings.Builder{}
 	//
-	// if under 1,000 handle it differently than if it was greater -- greater than 1,000 is more work
+	// handle negatives
 	//
-	if num <= 999 {
-		underOneThousandBuilder(num, &wordBuilder)
-	} else {
-		return overOneThousandBuilder(num, &wordBuilder)
+	numCopy := num
+	if num < 0 {
+		wordBuilder.WriteString(negative)
+		numCopy = -num
 	}
-	return wordBuilder.String()
+	//
+	//
+	// break the input into sections
+	//
+	var numberSections []number
+	for numCopy > 0 {
+		numberSections = append(numberSections, numCopy%1000)
+		numCopy = numCopy / 1000
+	}
+	//
+	// loop over the sections, building the word
+	//
+	for i := len(numberSections) - 1; i >= 0; i-- {
+		numberSection := numberSections[i]
+		//
+		// If a section is 0, then skip it as there are no words for it
+		//
+		if numberSection == 0 {
+			continue
+		}
+		//
+		// If words have been added to the buffer, then add a space for the next section
+		//
+		if wordBuilder.Len() > 0 {
+			wordBuilder.WriteString(space)
+		}
+		//
+		// Convert the word to hundred based
+		//
+		convertHundred(numberSection, &wordBuilder)
+		//
+		// if the section is within the hundred section, then add the classifier
+		//
+		if i > 0 {
+			wordBuilder.WriteString(space)
+			wordBuilder.WriteString(classifiers[i])
+		}
+	}
+	word := wordBuilder.String()
+	return strings.ToUpper(word[:1]) + word[1:]
 }
 
-func underOneThousandBuilder(num number, wordBuilder *strings.Builder) {
+func convertHundred(num number, wordBuilder *strings.Builder) {
 	if num <= 99 {
 		underOneHundredBuilder(num, wordBuilder)
 	} else {
-		hundredBuilder(num, wordBuilder)
+		wordBuilder.WriteString(singleAndTeenWords[num/100])
 		wordBuilder.WriteString(space)
-		underOneHundredBuilder(num%100, wordBuilder)
+		wordBuilder.WriteString(classifiers[0])
+		//
+		// If there is remainder, then get the next words
+		//
+		if num%100 != 0 {
+			wordBuilder.WriteString(space)
+			underOneHundredBuilder(num%100, wordBuilder)
+		}
 	}
 }
 
@@ -100,36 +156,4 @@ func underOneHundredBuilder(num number, wordBuilder *strings.Builder) {
 			wordBuilder.WriteString(dash + singleAndTeenWords[remainder])
 		}
 	}
-}
-
-func hundredBuilder(num number, wordBuilder *strings.Builder) {
-	//
-	// the special case when the number is in the hundreds
-	//
-	wordBuilder.WriteString(singleAndTeenWords[num/100])
-	wordBuilder.WriteString(space)
-	wordBuilder.WriteString(classifiers[0])
-}
-
-func overOneThousandBuilder(num number, wordBuilder *strings.Builder) string {
-	word := ""
-	position := 0
-	for num > 0 {
-		if num%1000 != 0 {
-			underOneThousandBuilder(num%1000, wordBuilder)
-			s2 := wordBuilder.String()
-			wordBuilder.Reset()
-			if position > 0 {
-				s2 = s2 + space + classifiers[position]
-			}
-			if len(word) == 0 {
-				word = s2
-			} else {
-				word = s2 + space + word
-			}
-		}
-		num /= 1000
-		position++
-	}
-	return word
 }

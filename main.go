@@ -2,53 +2,90 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
+	"github.com/pkg/errors"
 	"log"
 	"os"
-	"regexp"
+	"path/filepath"
 	"strconv"
-	"strings"
+	"time"
 )
 
 func main() {
 	//
-	// create regex to ensure only numbers are being converted to int64
+	// Setup flags to read file
 	//
-	validator, err := regexp.Compile("^[0-9]+$")
-	if err != nil {
-		log.Fatal("failed to compile validator:", err)
+	fileLocation := flag.String("f", "", "File containing the numbers to convert to words")
+	flag.Parse()
+	//
+	// Validate input flag
+	//
+	if len(*fileLocation) == 0 {
+		fmt.Println("Missing required flag '-f'")
+		flag.Usage()
+		return
 	}
 	//
-	// create standard input reader and start reading
+	// Open the file
 	//
-	reader := bufio.NewReader(os.Stdin)
-	for {
-		fmt.Print("Enter a number to convert: ")
-		inputString, err := reader.ReadString('\n')
-		if err != nil {
-			log.Fatal("\nfailed to read input:", err)
-		}
-		//
-		// remove the '\n' before performing regex or conversion
-		//
-		inputString = strings.Replace(inputString, "\n", "", -1)
-		//
-		// validate input
-		//
-		if !validator.MatchString(inputString) {
-			fmt.Printf("Input '%s' is not a valid input. Please try again.\n\n", inputString)
+	file, err := openFile(*fileLocation)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer closeFile(file)
+	defer printRuntime(time.Now())
+	lineChannel := make(chan string, 50)
+	go readFile(file, lineChannel)
+	handleLines(lineChannel)
+}
+
+func openFile(filename string) (*os.File, error) {
+	pathToFile, err := filepath.Abs(filename)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to get absolute path of %s", filename)
+	}
+	file, err := os.Open(pathToFile)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to open file %s", filename)
+	}
+	return file, nil
+}
+
+func closeFile(file *os.File) {
+	err := file.Close()
+	if err != nil {
+		log.Fatal(errors.Wrapf(err, "failed to close %s", file.Name()))
+	}
+}
+
+func readFile(file *os.File, lines chan string) {
+	defer close(lines)
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines <- scanner.Text()
+	}
+}
+
+func handleLines(lineChannel chan string) {
+	for line := range lineChannel {
+		if !numberValidator.isStringValid(line) {
+			fmt.Printf("Error: Input '%s' is not a valid input.\n", line)
 			continue
 		}
 		//
 		// convert to int64
 		//
-		input, err := strconv.ParseInt(inputString, 10, 64)
+		input, err := strconv.ParseInt(line, 10, 64)
 		if err != nil {
-			log.Fatalf("failed to convert input '%s' to int: %+v", inputString, err)
+			fmt.Printf("failed to convert input '%s' to int64: %+v", line, err)
+		} else {
+			fmt.Printf("Input: %s\n", line)
+			fmt.Printf("Output: %s\n", number(input))
 		}
-		//
-		// output the word
-		//
-		fmt.Printf("Output: %s\n\n", number(input))
 	}
+}
+
+func printRuntime(now time.Time) {
+	fmt.Printf("\nApplication took %f seconds to complete\n", time.Since(now).Seconds())
 }
