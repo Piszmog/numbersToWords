@@ -109,7 +109,7 @@ func (num number) String() string {
 		//
 		convertHundred(numberSection, &wordBuilder)
 		//
-		// if the section is within the hundred section, then add the classifier
+		// if the section is not within the hundred section, then add the classifier -- 'hundred' would be added from above
 		//
 		if i > 0 {
 			wordBuilder.WriteString(space)
