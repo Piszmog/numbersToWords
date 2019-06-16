@@ -1,5 +1,5 @@
 # Numbers to Words
-[![Build Status](https://travis-ci.org/Piszmog/numbersToWords.svg?branch=develop)](https://travis-ci.org/Piszmog/gotoggle)
+[![Build Status](https://travis-ci.org/Piszmog/numbersToWords.svg?branch=develop)](https://travis-ci.org/Piszmog/numbersToWords)
 [![Coverage Status](https://coveralls.io/repos/github/Piszmog/numbersToWords/badge.svg?branch=develop)](https://coveralls.io/github/Piszmog/numbersToWords?branch=develop)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Piszmog/numbersToWords)](https://goreportcard.com/report/github.com/Piszmog/numbersToWords)
 [![GitHub release](https://img.shields.io/github/release/Piszmog/numbersToWords.svg)](https://github.com/Piszmog/numbersToWords/releases/latest)
@@ -8,7 +8,7 @@
 Application for converting numbers into their word equivalent - i.e  `1` -> `One`
 
 ## Running
-Download the appropriate executable for the Operating System that it will be ran on (Linux, Mac, Windows). Then simply run 
+Download the appropriate executable from the [Releases Page](https://github.com/Piszmog/numbersToWords/releases) for the Operating System that it will be ran on (Linux, Mac, Windows). Then simply run 
 the executable with the `-f` flag to specify the input file to read.
 
 ```bash
