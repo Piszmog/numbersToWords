@@ -26,4 +26,7 @@ func TestIsStringValid(t *testing.T) {
 	if numberValidator.isStringValid("1-") {
 		t.Fatal("Expected string '1-' to be not valid")
 	}
+	if numberValidator.isStringValid("1,000") {
+		t.Fatal("Expected string '1,000' to be not valid")
+	}
 }
